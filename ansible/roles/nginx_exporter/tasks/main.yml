@@ -1,0 +1,33 @@
+---
+# nginx exporter: 접속 수·요청 수를 숫자로 → :9113/metrics
+- name: Nginx 상태 페이지 (127.0.0.1:8080/stub_status)
+  ansible.builtin.copy:
+    src: stub_status.conf
+    dest: /etc/nginx/conf.d/stub_status.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload nginx
+
+- name: 상태 페이지 바로 적용
+  ansible.builtin.meta: flush_handlers
+
+- name: Nginx exporter 설치
+  ansible.builtin.apt:
+    name: prometheus-nginx-exporter
+    state: present
+
+- name: Nginx exporter 실행 + 부팅 시 자동 시작
+  ansible.builtin.service:
+    name: prometheus-nginx-exporter
+    state: started
+    enabled: true
+
+- name: 9113 포트는 Prometheus에서만 허용
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+    to_port: "9113"
+    proto: tcp
+    comment: nginx_exporter
+  loop: "{{ exporter_allow_from }}"
