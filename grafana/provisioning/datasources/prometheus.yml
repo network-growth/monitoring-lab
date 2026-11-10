@@ -1,0 +1,10 @@
+# Grafana가 켜질 때 Prometheus를 데이터 소스로 자동 등록 (화면에서 손으로 안 해도 됨)
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    uid: prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090   # 같은 compose 네트워크 안이라 컨테이너 이름으로 접속
+    isDefault: true
