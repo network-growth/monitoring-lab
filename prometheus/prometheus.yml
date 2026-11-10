@@ -1,0 +1,12 @@
+# Prometheus 설정 — 어디서(targets) 얼마나 자주(interval) 숫자를 가져올지
+global:
+  scrape_interval: 15s       # 15초마다 수집
+  evaluation_interval: 15s   # 15초마다 알림 규칙 검사 (Phase 4)
+
+scrape_configs:
+  # Phase 1: Prometheus 자기 자신
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  # Phase 2: 서버 3대의 node_exporter (여기에 추가 예정)
