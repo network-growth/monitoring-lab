@@ -4,9 +4,28 @@ global:
   evaluation_interval: 15s   # 15초마다 알림 규칙 검사 (Phase 4)
 
 scrape_configs:
-  # Phase 1: Prometheus 자기 자신
+  # Prometheus 자기 자신
   - job_name: prometheus
     static_configs:
       - targets: ["localhost:9090"]
 
-  # Phase 2: 서버 3대의 node_exporter (여기에 추가 예정)
+  # 서버 상태 (CPU·메모리·디스크·네트워크)
+  # ubuntu-server도 IP로 적음: 컨테이너 안에서 localhost는 "컨테이너 자신"이라서
+  - job_name: node
+    static_configs:
+      - targets: ["192.168.56.101:9100"]
+        labels: {host: ubuntu-server}
+      - targets: ["192.168.56.102:9100"]
+        labels: {host: web02}
+      - targets: ["192.168.56.104:9100"]
+        labels: {host: web03}
+
+  # Nginx 상태 (접속 수·요청 수)
+  - job_name: nginx
+    static_configs:
+      - targets: ["192.168.56.101:9113"]
+        labels: {host: ubuntu-server}
+      - targets: ["192.168.56.102:9113"]
+        labels: {host: web02}
+      - targets: ["192.168.56.104:9113"]
+        labels: {host: web03}
