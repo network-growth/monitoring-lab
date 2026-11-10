@@ -1,0 +1,4 @@
+---
+# exporter에 접속을 허용할 곳 (Prometheus 서버)
+exporter_allow_from:
+  - 192.168.56.101

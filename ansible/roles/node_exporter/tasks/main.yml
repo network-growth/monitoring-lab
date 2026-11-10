@@ -1,0 +1,23 @@
+---
+# node_exporter: CPU·메모리·디스크·네트워크를 숫자로 → :9100/metrics
+- name: Node exporter 설치
+  ansible.builtin.apt:
+    name: prometheus-node-exporter
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Node exporter 실행 + 부팅 시 자동 시작
+  ansible.builtin.service:
+    name: prometheus-node-exporter
+    state: started
+    enabled: true
+
+- name: 9100 포트는 Prometheus에서만 허용
+  community.general.ufw:
+    rule: allow
+    from_ip: "{{ item }}"
+    to_port: "9100"
+    proto: tcp
+    comment: node_exporter
+  loop: "{{ exporter_allow_from }}"
