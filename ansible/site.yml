@@ -1,0 +1,8 @@
+---
+# 서버 3대에 exporter 설치 → Prometheus(192.168.56.101)만 접속 허용
+- name: Monitoring exporters
+  hosts: monitored
+  become: true
+  roles:
+    - node_exporter
+    - nginx_exporter
