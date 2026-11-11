@@ -1,0 +1,39 @@
+groups:
+  - name: lab
+    rules:
+      # 서버가 1분 넘게 응답 없음 (전원 꺼짐, 네트워크 끊김)
+      - alert: InstanceDown
+        expr: up{job="node"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: '{{ $labels.host }} 서버 응답 없음'
+          description: '1분 넘게 수집 실패 ({{ $labels.instance }})'
+
+      # 서버는 살아있는데 Nginx만 죽음
+      - alert: NginxDown
+        expr: nginx_up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: '{{ $labels.host }} Nginx 중지'
+
+      # CPU 80% 넘는 상태가 1분 지속
+      - alert: HighCPU
+        expr: 100 * (1 - avg by (host) (rate(node_cpu_seconds_total{mode="idle"}[1m]))) > 80
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.host }} CPU {{ $value | printf "%.0f" }}%'
+
+      # 디스크 85% 넘는 상태가 5분 지속
+      - alert: DiskAlmostFull
+        expr: 100 * (1 - node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"}) > 85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: '{{ $labels.host }} 디스크 {{ $value | printf "%.0f" }}%'
