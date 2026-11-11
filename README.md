@@ -61,8 +61,6 @@ monitoring-lab/
 - Grafana가 켜질 때 Prometheus 데이터 소스를 **자동 등록**(provisioning) → `Test` 성공
 - Prometheus 타깃 `prometheus` 1/1 UP
 
-<!-- 📸 docker compose ps / Grafana Data source Test / Prometheus targets -->
-
 ### Phase 2. 서버 3대에 exporter (Ansible)
 ```bash
 cd ansible && ansible-playbook site.yml -K
@@ -77,7 +75,9 @@ cd ansible && ansible-playbook site.yml -K
 
 - 결과: `node` 3/3 UP, `nginx` 3/3 UP
 
-<!-- 📸 PLAY RECAP / targets 6개 UP -->
+<img width="1906" height="492" alt="스크린샷 2026-11-11 112755" src="https://github.com/user-attachments/assets/cc52ab9b-2f52-45cd-93d0-90b42b6f3f21" />
+
+<img width="1875" height="686" alt="스크린샷 2026-11-11 112918" src="https://github.com/user-attachments/assets/9930ee0f-265f-4398-8fef-1ee0651b8ece" />
 
 ### Phase 3. Grafana 대시보드
 | 단계 | 내용 |
@@ -94,8 +94,6 @@ cd ansible && ansible-playbook site.yml -K
 | CPU 사용률 | `100 * (1 - avg by (host) (rate(node_cpu_seconds_total{mode="idle"}[1m])))` |
 | Nginx 초당 요청 / 접속 수 | `rate(nginx_http_requests_total[1m])`, `nginx_connections_active` |
 | 네트워크 | `rate(node_network_receive/transmit_bytes_total{device="enp0s8"}[1m])` |
-
-<!-- 📸 Lab Overview / CPU 그래프 솟은 화면 -->
 
 ### Phase 4. 알림 + 장애 훈련
 **알림 규칙** (`prometheus/rules/alerts.yml`, GitHub에서 직접 작성)
@@ -119,7 +117,11 @@ cd ansible && ansible-playbook site.yml -K
 | ② CPU 폭주 | web03 모든 코어 무한 루프 | CPU 그래프 상승 | 노트북까지 멈춰 중단 (아래 Troubleshooting) |
 | ③ 전원 끄기 | VirtualBox에서 web03 전원 끄기 | web03 DOWN | 📱 `InstanceDown web03` → 재시작 후 RESOLVED |
 
-<!-- 📸 9090/alerts FIRING / 디스코드 FIRING·RESOLVED 메시지 -->
+<img width="322" height="114" alt="스크린샷 2026-11-11 113043" src="https://github.com/user-attachments/assets/9e1c8874-c460-4272-97cc-d90ebaf22a6b" />
+
+<img width="1203" height="63" alt="스크린샷 2026-11-11 113057" src="https://github.com/user-attachments/assets/62308b3f-1247-49a2-a27d-de1bd47d217f" />
+
+<img width="328" height="341" alt="스크린샷 2026-11-11 113111" src="https://github.com/user-attachments/assets/424cd17a-7c7a-4e09-a596-641c195f00a8" />
 
 ---
 
