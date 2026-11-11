@@ -1,6 +1,7 @@
 # 모니터링 서버 (ubuntu-server 192.168.56.101에서 실행)
 #   Prometheus : 서버들의 숫자(지표)를 15초마다 모아 저장
 #   Grafana    : 모은 숫자를 그래프로 → 브라우저 http://192.168.56.101:3000
+#   Alertmanager : Prometheus가 보낸 알림을 디스코드로
 services:
   prometheus:
     image: prom/prometheus:v3.4.0
@@ -29,6 +30,21 @@ services:
     depends_on:
       - prometheus
 
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    container_name: alertmanager
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --storage.path=/alertmanager
+    volumes:
+      - ./alertmanager:/etc/alertmanager:ro
+      - ./secrets:/run/secrets/alertmanager:ro   # 디스코드 웹후크 (Git 제외)
+      - alertmanager-data:/alertmanager
+    ports:
+      - "9093:9093"
+
 volumes:
   prometheus-data:
   grafana-data:
+  alertmanager-data:
