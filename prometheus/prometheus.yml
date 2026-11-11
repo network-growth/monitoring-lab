@@ -1,7 +1,17 @@
 # Prometheus 설정 — 어디서(targets) 얼마나 자주(interval) 숫자를 가져올지
 global:
   scrape_interval: 15s       # 15초마다 수집
-  evaluation_interval: 15s   # 15초마다 알림 규칙 검사 (Phase 4)
+  evaluation_interval: 15s   # 15초마다 알림 규칙 검사
+
+# 알림 규칙 파일 (prometheus/rules/ 아래 .yml 전부)
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+# 규칙에 걸리면 Alertmanager로 전달 (같은 compose 네트워크라 컨테이너 이름으로)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ["alertmanager:9093"]
 
 scrape_configs:
   # Prometheus 자기 자신
