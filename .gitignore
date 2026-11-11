@@ -1,2 +1,3 @@
 # 비밀 값 (Grafana 비밀번호, 디스코드 웹후크)
 .env
+secrets/
