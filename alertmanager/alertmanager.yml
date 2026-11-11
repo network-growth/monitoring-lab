@@ -1,0 +1,14 @@
+# Alertmanager — Prometheus가 보낸 알림을 묶어서 디스코드로 전송
+route:
+  receiver: discord
+  group_by: [alertname, host]   # 같은 알림·같은 서버는 한 메시지로 묶음
+  group_wait: 10s               # 첫 알림은 10초 모았다가 전송
+  group_interval: 1m            # 같은 묶음에 새 알림이 생기면 1분 뒤 추가 전송
+  repeat_interval: 1h           # 안 고쳐지면 1시간마다 다시 알림
+
+receivers:
+  - name: discord
+    discord_configs:
+      # 웹후크 주소는 Git에 올리지 않고 서버의 secrets/ 파일에서 읽음
+      - webhook_url_file: /run/secrets/alertmanager/discord_webhook
+        send_resolved: true     # 복구되면 "RESOLVED" 메시지도 전송
