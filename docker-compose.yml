@@ -11,6 +11,7 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.retention.time=7d   # 7일치만 보관
       - --web.enable-lifecycle             # 설정 다시 읽기(reload) 허용
+      - --web.external-url=http://192.168.56.101:9090   # 알림의 Source 링크 주소
     volumes:
       - ./prometheus:/etc/prometheus:ro
       - prometheus-data:/prometheus
@@ -37,6 +38,7 @@ services:
     command:
       - --config.file=/etc/alertmanager/alertmanager.yml
       - --storage.path=/alertmanager
+      - --web.external-url=http://192.168.56.101:9093
     volumes:
       - ./alertmanager:/etc/alertmanager:ro
       - ./secrets:/run/secrets/alertmanager:ro   # 디스코드 웹후크 (Git 제외)
